@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xing.libao.dao.impl.CodeDaoImpl">
+
+    <resultMap type="com.xing.libao.bean.Code" id="code-bean">
+        <id property="id" column="Fid"/>
+        <result property="title" column="Ftitle"/>
+        <result property="size" column="Fsize"/>
+        <result property="code" column="Fcode"/>
+        <result property="time" column="Ftime"/>
+    </resultMap>
+
+    <select id="listCodes" resultMap="code-bean">
+        select * from code
+        <if test="limit != null">
+            limit ${offset},${limit}
+        </if>
+    </select>
+
+    <insert id="saveCode" parameterType="com.xing.libao.bean.Code">
+        <selectKey resultType="java.lang.Integer" keyProperty="Fid" order="AFTER">
+            SELECT @@IDENTITY
+        </selectKey>
+        insert into code (Ftitle,Fsize,Fcode,Ftime) values (#{title},#{size},#{code},#{time});
+    </insert>
+
+    <select id="getCode" parameterType="java.lang.Integer" resultMap="code-bean">
+        select * from code where Fid = #{id}
+    </select>
+
+    <select id="countByCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from code where Fcode = #{liCode}
+    </select>
+</mapper>

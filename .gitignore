@@ -1,0 +1,23 @@
+.idea/
+
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+target/
+.classpath
+.project
+.settings/
+logs/
+.iml
+src/test/*.iml
+src/main/webapp/WEB-INF/lib/
+*.iml
+src/main/webapp/WEB-INF/build_time
+publish/result.sql
