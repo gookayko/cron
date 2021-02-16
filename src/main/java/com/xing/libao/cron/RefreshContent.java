@@ -34,7 +34,7 @@ public class RefreshContent {
         refreshContent.task();
     }
 
-    @Scheduled(fixedRate = 120000)
+    //@Scheduled(fixedRate = 120000)
     public void task() {
         System.out.println("let's begin RefreshContent - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         String contentTemp = getContent(uri);

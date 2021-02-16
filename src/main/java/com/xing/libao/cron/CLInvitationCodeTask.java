@@ -44,7 +44,7 @@ public class CLInvitationCodeTask {
             Elements elements = document.select("tr.tr3.t_one");
             for (Element element : elements) {
                 String title = element.child(1).child(0).child(0).text();
-                if(title.contains("码")) {
+                if(title.contains("码") || title.contains("福利") || title.contains("游客")) {
                     System.out.println(element.child(1).child(0).child(0).attr("abs:href") + " --- " + title);
                 }
             }

@@ -59,12 +59,20 @@ public class PostData {
                     list.add(new BasicNameValuePair("fid", "7"));
                     list.add(new BasicNameValuePair("atc_attachment", "none"));
                     list.add(new BasicNameValuePair("tid", tid + ""));
+                    list.add(new BasicNameValuePair("pid", ""));
+                    list.add(new BasicNameValuePair("article", ""));
+                    list.add(new BasicNameValuePair("verify", "verify"));
                     UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, Consts.UTF_8);
-                    HttpPost httppost = new HttpPost(url);
+                    HttpPost httppost = new HttpPost("http://cl.bearhk.info/post.php");
+                    httppost.setHeader("Cookie","__cfduid=d4586a7ca299796975eaa54ae57e4ac0c1432880887;227c9_winduser=BQEOU1dcP1YBUg1SDVUDVgoCBwQDAQMABABRCA1RBVBTAwEADlcB;");
+                    httppost.setHeader("Host","cl.bearhk.info");
+                    httppost.setHeader("Origin","http://cl.bearhk.info");
+                    httppost.setHeader("Referer",url);
+                    httppost.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36");
                     httppost.setEntity(entity);
                     CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
                     CloseableHttpResponse response = closeableHttpClient.execute(httppost);
-                    String content = EntityUtils.toString(response.getEntity());
+                    String content = EntityUtils.toString(response.getEntity(),"gbk");
                     System.out.println(content);
                     strings.add(url);
                 }
