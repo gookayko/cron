@@ -52,7 +52,7 @@ public class PostData {
                     list.add(new BasicNameValuePair("atc_usesign", "1"));
                     list.add(new BasicNameValuePair("atc_convert", "1"));
                     list.add(new BasicNameValuePair("atc_autourl", "1"));
-                    list.add(new BasicNameValuePair("atc_title", URLEncoder.encode("Re:" + title, "gb2312")));
+                    list.add(new BasicNameValuePair("atc_title", URLEncoder.encode("Re:" + title, "gbk")));
                     list.add(new BasicNameValuePair("atc_content", "1024"));
                     list.add(new BasicNameValuePair("step", "2"));
                     list.add(new BasicNameValuePair("action", "reply"));
@@ -66,6 +66,10 @@ public class PostData {
                     HttpPost httppost = new HttpPost("http://cl.bearhk.info/post.php");
                     httppost.setHeader("Cookie","__cfduid=d4586a7ca299796975eaa54ae57e4ac0c1432880887;227c9_winduser=BQEOU1dcP1YBUg1SDVUDVgoCBwQDAQMABABRCA1RBVBTAwEADlcB;");
                     httppost.setHeader("Host","cl.bearhk.info");
+                    httppost.setHeader("Accept-Language","zh-CN,zh;q=0.8");
+                    httppost.setHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+                    httppost.setHeader("Content-Type","application/x-www-form-urlencoded");
+                    httppost.setHeader("Proxy-Authorization","Basic eW9sdS12cG46YmQ2NTdkODRkc3A=");
                     httppost.setHeader("Origin","http://cl.bearhk.info");
                     httppost.setHeader("Referer",url);
                     httppost.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36");
@@ -73,7 +77,9 @@ public class PostData {
                     CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
                     CloseableHttpResponse response = closeableHttpClient.execute(httppost);
                     String content = EntityUtils.toString(response.getEntity(),"gbk");
-                    System.out.println(content);
+                    if(content.contains("發貼完畢點擊進入主題列表")) {
+                        System.out.println("回帖完毕，积分到手！");
+                    }
                     strings.add(url);
                 }
                 Thread.sleep(1025000);

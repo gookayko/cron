@@ -23,7 +23,7 @@ import java.util.List;
  * Time: 10:53
  */
 public class JoinInCL {
-    private String code = "a695eX60*d56*e33b";
+    private String code = "04a05b*6*2b24cd5";
     private static String postUrl = "http://cl.bearhk.info/register.php";
 
     public static void main(String[] args) {

@@ -7,10 +7,6 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:annotation-config/>
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
-    <context:component-scan base-package="com.xing.libao.*"/>
-
     <bean id="parentDataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
         <!-- 配置初始化大小、最小、最大 -->
         <property name="initialSize" value="5"/>

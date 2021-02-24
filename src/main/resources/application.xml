@@ -45,6 +45,13 @@
         <property name="password" value="Xingzhe4245"/>
     </bean>
 
+    <bean id="titleSource" parent="parentDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/weibo_photo?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="xingzhe4245"/>
+    </bean>
+
     <bean id="codeSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="codeSource"/>
         <property name="mapperLocations" value="classpath*:mapper/*.map.xml"/>
@@ -52,5 +59,22 @@
 
     <bean id="codeSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg index="0" ref="codeSqlSessionFactory"/>
+    </bean>
+
+    <bean id="titleSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="titleSource"/>
+        <property name="mapperLocations" value="classpath*:mapper/*.map.xml"/>
+    </bean>
+
+    <bean id="titleSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="titleSqlSessionFactory"/>
+    </bean>
+
+    <bean id="titleDao" class="com.xing.libao.dao.impl.TitleDaoImpl">
+        <property name="sqlSession" ref="titleSqlSession"/>
+    </bean>
+
+    <bean id="codeDao" class="com.xing.libao.dao.impl.CodeDaoImpl">
+        <property name="sqlSession" ref="codeSqlSession"/>
     </bean>
 </beans>

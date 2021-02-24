@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xing.libao.dao.impl.TitleDaoImpl">
+
+    <resultMap type="com.xing.libao.bean.Title" id="title-bean">
+        <id property="id" column="Fid"/>
+        <result property="title" column="Ftitle"/>
+        <result property="url" column="Furl"/>
+        <result property="fid" column="Ffid"/>
+        <result property="md5" column="Fmd5"/>
+        <result property="time" column="Ftime"/>
+    </resultMap>
+
+    <insert id="saveTitle" parameterType="com.xing.libao.bean.Title">
+        <selectKey resultType="java.lang.Integer" keyProperty="Fid" order="AFTER">
+            SELECT @@IDENTITY
+        </selectKey>
+        insert into title (Ftitle,Furl,Fmd5,Ffid,Ftime) values (#{title},#{url},#{md5},#{fid},#{time});
+    </insert>
+
+    <select id="getBtMd5" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from title where Fmd5 = #{md5}
+    </select>
+</mapper>
