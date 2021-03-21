@@ -40,7 +40,7 @@ public class RecordTitle {
         recordTitle.task();
     }
 
-    @Scheduled(fixedRate = 120000)
+    //@Scheduled(fixedRate = 120000)
     public void task() {
         String base = "http://cl.bearhk.info/thread0806.php?fid=";
         Set<Integer> fidSet = map.keySet();

@@ -35,7 +35,7 @@ public class CLInvitationCodeTask {
         codeTask.task();
     }
 
-    @Scheduled(fixedRate = 120000)
+    //@Scheduled(fixedRate = 120000)
     public void task() {
         System.out.println("let's begin - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         Document document = null;

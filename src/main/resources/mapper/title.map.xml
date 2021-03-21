@@ -21,7 +21,18 @@
         insert into title (Ftitle,Furl,Fmd5,Ffid,Ftime) values (#{title},#{url},#{md5},#{fid},#{time});
     </insert>
 
+    <insert id="saveWeiBo" parameterType="com.xing.libao.bean.WeiBo">
+        <selectKey resultType="java.lang.Integer" keyProperty="Fid" order="AFTER">
+            SELECT @@IDENTITY
+        </selectKey>
+        insert into weibo (Fuid,Fmid,Fname,Ftext,Fverified_type,Ftime) values (#{uid},#{mid},#{name},#{text},#{verifiedType},UNIX_TIMESTAMP());
+    </insert>
+
     <select id="getBtMd5" parameterType="java.lang.String" resultType="java.lang.Integer">
         select count(*) from title where Fmd5 = #{md5}
+    </select>
+
+    <select id="listAllMid" resultType="java.lang.Long">
+        select Fmid from weibo
     </select>
 </mapper>

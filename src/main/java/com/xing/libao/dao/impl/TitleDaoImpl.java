@@ -1,8 +1,11 @@
 package com.xing.libao.dao.impl;
 
 import com.xing.libao.bean.Title;
+import com.xing.libao.bean.WeiBo;
 import com.xing.libao.dao.TitleDao;
 import org.mybatis.spring.SqlSessionTemplate;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +22,16 @@ public class TitleDaoImpl implements TitleDao {
     @Override
     public int saveTitle(Title title) {
         return sqlSession.insert(getClass().getName() + ".saveTitle", title);
+    }
+
+    @Override
+    public int saveWeiBo(WeiBo weiBo) {
+        return sqlSession.insert(getClass().getName() + ".saveWeiBo", weiBo);
+    }
+
+    @Override
+    public List<Long> listAllMid() {
+        return (List<Long>) sqlSession.selectList(getClass().getName() + ".listAllMid");
     }
 
     public SqlSessionTemplate sqlSession;

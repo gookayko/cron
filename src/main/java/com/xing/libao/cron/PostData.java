@@ -52,7 +52,7 @@ public class PostData {
                     list.add(new BasicNameValuePair("atc_usesign", "1"));
                     list.add(new BasicNameValuePair("atc_convert", "1"));
                     list.add(new BasicNameValuePair("atc_autourl", "1"));
-                    list.add(new BasicNameValuePair("atc_title", URLEncoder.encode("Re:" + title, "gbk")));
+                    list.add(new BasicNameValuePair("atc_title", "感谢分享"));
                     list.add(new BasicNameValuePair("atc_content", "1024"));
                     list.add(new BasicNameValuePair("step", "2"));
                     list.add(new BasicNameValuePair("action", "reply"));

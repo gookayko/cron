@@ -60,7 +60,7 @@ public class CL115Task {
         }
     }
 
-    //@Scheduled(fixedRate = 1200000)
+    //
     public void test() {
         Document document = null;
         System.out.println("let's begin - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
