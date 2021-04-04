@@ -71,4 +71,29 @@ public class Task {
         System.out.println(s);
         System.out.println(s.replaceAll("\\||\\\\|/|:|\\*|\\?|\"|<|>",""));
     }
+
+    @Test
+    public void downTxt(){
+        Document document = null;
+        try {
+            document = Jsoup.connect("http://www.sexinsex.net/bbs/thread-5509049-1-1.html").header("Cookie","cdb3_cookietime=2592000; cdb3_auth=9Ewc0L8BnCFLHOFNwUuO2DVHaMzc5x672m6lBDZH6MrziOstG0fwkwCT55UK3lSpjOM; __utma=1.1279172035.1432213658.1432395913.1432478611.5; __utmz=1.1432213658.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); cdb3_sid=le8xxA; cdb3_oldtopics=D4623525D4192873D; cdb3_smile=1D1").get();
+            Elements elements = document.select("a[href]");
+            for (Element element : elements) {
+                System.out.println(element.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test(){
+        for(int i=1;i<62;i++){
+            if(i<10) {
+                System.out.println("[img]http://img.aitaotu.com/Pics/2015/0527/23/0" + i + ".jpg[/img]\n");
+            }else{
+                System.out.println("[img]http://img.aitaotu.com/Pics/2015/0527/23/" + i + ".jpg[/img]\n");
+            }
+        }
+    }
 }
