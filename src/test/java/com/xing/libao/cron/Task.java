@@ -24,6 +24,12 @@ import java.util.Date;
 public class Task {
 
     @Test
+    public void testAll(){
+        String s = "magnet:?xt=urn:btih:7257847CC86F9D73BBE76797206532A97967EA55&xl=729799212&dn=Tokyo Hot n0125 極悪非道！";
+        System.out.println(s.substring(0,s.indexOf("&")));
+    }
+
+    @Test
     public void href() {
         System.out.println("let's begin - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         Document document = null;
