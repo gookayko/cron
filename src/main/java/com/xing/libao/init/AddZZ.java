@@ -44,8 +44,8 @@ AddZZ addZZ = new AddZZ();
 //        HttpPost httpPost = new HttpPost("http://172.10.10.110:8080/platform-c/resume/upload/dev/save");
         HttpEntity req = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                .addPart("Filedata", new FileBody(new File("C:\\Users\\YLZX-Z0107\\Downloads\\1cd33a2d73b89a7273aeb745f6b9b73b9ebcb252.torrent")))
-                .addTextBody("Filename", "1cd33a2d73b89a7273aeb745f6b9b73b9ebcb252.torrent")
+                .addPart("Filedata", new FileBody(new File("C:\\Users\\YLZX-Z0107\\Downloads\\8c35db915496f57812f2d9d655d5edde1945134b.torrent")))
+                .addTextBody("Filename", "8c35db915496f57812f2d9d655d5edde1945134b.torrent")
                 .addTextBody("target", "U_1_458348252144818522")
                 .addTextBody("Upload", "Submit Query")
                 .build();
@@ -82,23 +82,35 @@ AddZZ addZZ = new AddZZ();
                     JSONObject object2 = new JSONObject(content2);
                     String infoHash = object2.get("info_hash").toString();
                     String path = object2.get("torrent_name").toString();
-                    HttpPost httpPost3 = new HttpPost("http://115.com/lixian/?ct=lixian&ac=add_task_bt");
-                    httpPost3.setHeader("Cookie","115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
-                    httpPost3.setHeader("Referer","http://115.com/?ac=offline_tpl&is_wl_tpl=1");
-                    httpPost3.setHeader("Host", "115.com");
-                    httpPost3.setHeader("Origin", "http://115.com");
-                    List<NameValuePair> list2 = new ArrayList<NameValuePair>();
-                    list2.add(new BasicNameValuePair("info_hash", infoHash));
-                    list2.add(new BasicNameValuePair("wanted", "0"));
-                    list2.add(new BasicNameValuePair("savepath", path));
-                    list2.add(new BasicNameValuePair("uid", "2955186"));
-                    list2.add(new BasicNameValuePair("sign", "2df57e7e111be9d368a2877272494b9d"));
-                    list2.add(new BasicNameValuePair("time", "1438141257"));
-                    UrlEncodedFormEntity entity2 = new UrlEncodedFormEntity(list2, Consts.UTF_8);
-                    httpPost3.setEntity(entity2);
-                    response = httpClient.execute(httpPost3);
-                    String content3 = EntityUtils.toString(response.getEntity(), "gbk");
-                    System.out.println(content3);
+                    JSONArray array = object2.getJSONArray("torrent_filelist_web");
+                    String wanted = "";
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject objectTmp = array.getJSONObject(i);
+                        int size = objectTmp.getInt("size");
+                        String pathName = objectTmp.getString("path");
+                        System.out.println(size);
+                        if(pathName.contains(".jpg") || size>104857600){
+                            wanted += i+",";
+                        }
+                    }
+                    System.out.println(wanted);
+//                    HttpPost httpPost3 = new HttpPost("http://115.com/lixian/?ct=lixian&ac=add_task_bt");
+//                    httpPost3.setHeader("Cookie","115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
+//                    httpPost3.setHeader("Referer","http://115.com/?ac=offline_tpl&is_wl_tpl=1");
+//                    httpPost3.setHeader("Host", "115.com");
+//                    httpPost3.setHeader("Origin", "http://115.com");
+//                    List<NameValuePair> list2 = new ArrayList<NameValuePair>();
+//                    list2.add(new BasicNameValuePair("info_hash", infoHash));
+//                    list2.add(new BasicNameValuePair("wanted", "0"));
+//                    list2.add(new BasicNameValuePair("savepath", path));
+//                    list2.add(new BasicNameValuePair("uid", "2955186"));
+//                    list2.add(new BasicNameValuePair("sign", "2df57e7e111be9d368a2877272494b9d"));
+//                    list2.add(new BasicNameValuePair("time", "1438141257"));
+//                    UrlEncodedFormEntity entity2 = new UrlEncodedFormEntity(list2, Consts.UTF_8);
+//                    httpPost3.setEntity(entity2);
+//                    response = httpClient.execute(httpPost3);
+//                    String content3 = EntityUtils.toString(response.getEntity(), "gbk");
+//                    System.out.println(content3);
                 }
             }
         } finally {
