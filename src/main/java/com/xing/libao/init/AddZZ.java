@@ -28,24 +28,33 @@ import java.util.List;
  * Time: 10:55
  */
 public class AddZZ {
-    public static void main(String[] args) throws Exception{
-AddZZ addZZ = new AddZZ();
+    public static void main(String[] args) throws Exception {
+        AddZZ addZZ = new AddZZ();
 //        System.out.println(new String("\u53c2\u6570\u9519\u8bef\u3002"));
-        addZZ.testUploadResume();
+        File file = new File("C:\\Users\\Administrator\\Downloads");
+        File[] files = file.listFiles();
+        for(File file1:files){
+            String path = file1.getAbsolutePath();
+            if(path.contains(".torrent")) {
+                System.out.println(path);
+                addZZ.testUploadResume(path);
+                Thread.sleep(5000);
+            }
+        }
     }
 
-    public void testUploadResume() throws Exception {
+    public void testUploadResume(String pathPath) throws Exception {
 //        HttpPost httpPost = new HttpPost("http://59.151.73.6:8080/platform-c-2.1.2/resume/upload/save");
         HttpPost httpPost = new HttpPost("http://upload.115.com/upload?debugs=0&userid=2955186&ets=1438314049&appid=n&sig=D2D299AB19AE38D873B10F0B4BB5B703799A7E03");
-        httpPost.setHeader("Cookie","115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
-        httpPost.setHeader("Referer","http://115.com/?ac=offline_tpl&is_wl_tpl=1");
+        httpPost.setHeader("Cookie", "115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
+        httpPost.setHeader("Referer", "http://115.com/?ac=offline_tpl&is_wl_tpl=1");
         httpPost.setHeader("Host", "115.com");
         httpPost.setHeader("Origin", "http://115.com");
 //        HttpPost httpPost = new HttpPost("http://172.10.10.110:8080/platform-c/resume/upload/dev/save");
         HttpEntity req = MultipartEntityBuilder.create()
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                .addPart("Filedata", new FileBody(new File("C:\\Users\\YLZX-Z0107\\Downloads\\8c35db915496f57812f2d9d655d5edde1945134b.torrent")))
-                .addTextBody("Filename", "8c35db915496f57812f2d9d655d5edde1945134b.torrent")
+                .addPart("Filedata", new FileBody(new File(pathPath)))
+                .addTextBody("Filename", "5a762f363b25d9f12fafc389a6062a673f0ba0fe.torrent")
                 .addTextBody("target", "U_1_458348252144818522")
                 .addTextBody("Upload", "Submit Query")
                 .build();
@@ -58,14 +67,14 @@ AddZZ addZZ = new AddZZ();
                 String content = EntityUtils.toString(responseEntity, "utf-8");
                 JSONObject object = new JSONObject(content);
                 System.out.println(content);
-                if(object.getJSONObject("data")!=null){
+                if (object.getJSONObject("data") != null) {
                     String pickCode = object.getJSONObject("data").get("pick_code").toString();
                     String sha1 = object.getJSONObject("data").get("sha1").toString();
                     String fileId = object.getJSONObject("data").get("file_id").toString();
                     System.out.println("fileId: " + fileId + " sha1: " + sha1 + " pickCode: " + pickCode);
                     HttpPost httpPost2 = new HttpPost("http://115.com/lixian/?ct=lixian&ac=torrent");
-                    httpPost2.setHeader("Cookie","115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
-                    httpPost2.setHeader("Referer","http://115.com/?ac=offline_tpl&is_wl_tpl=1");
+                    httpPost2.setHeader("Cookie", "115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
+                    httpPost2.setHeader("Referer", "http://115.com/?ac=offline_tpl&is_wl_tpl=1");
                     httpPost2.setHeader("Host", "115.com");
                     httpPost2.setHeader("Origin", "http://115.com");
                     List<NameValuePair> list = new ArrayList<NameValuePair>();
@@ -86,31 +95,32 @@ AddZZ addZZ = new AddZZ();
                     String wanted = "";
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject objectTmp = array.getJSONObject(i);
-                        int size = objectTmp.getInt("size");
+                        long size = objectTmp.getLong("size");
                         String pathName = objectTmp.getString("path");
-                        System.out.println(size);
-                        if(pathName.contains(".jpg") || size>104857600){
-                            wanted += i+",";
+//                        System.out.println("i: " + i + " name: " + pathName + " size: " + size);
+                        if (pathName.contains(".jpg") || size > 10485760 || pathName.contains(".mp4")) {
+                            wanted += i + ",";
                         }
                     }
-                    System.out.println(wanted);
-//                    HttpPost httpPost3 = new HttpPost("http://115.com/lixian/?ct=lixian&ac=add_task_bt");
-//                    httpPost3.setHeader("Cookie","115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
-//                    httpPost3.setHeader("Referer","http://115.com/?ac=offline_tpl&is_wl_tpl=1");
-//                    httpPost3.setHeader("Host", "115.com");
-//                    httpPost3.setHeader("Origin", "http://115.com");
-//                    List<NameValuePair> list2 = new ArrayList<NameValuePair>();
-//                    list2.add(new BasicNameValuePair("info_hash", infoHash));
-//                    list2.add(new BasicNameValuePair("wanted", "0"));
-//                    list2.add(new BasicNameValuePair("savepath", path));
-//                    list2.add(new BasicNameValuePair("uid", "2955186"));
-//                    list2.add(new BasicNameValuePair("sign", "2df57e7e111be9d368a2877272494b9d"));
-//                    list2.add(new BasicNameValuePair("time", "1438141257"));
-//                    UrlEncodedFormEntity entity2 = new UrlEncodedFormEntity(list2, Consts.UTF_8);
-//                    httpPost3.setEntity(entity2);
-//                    response = httpClient.execute(httpPost3);
-//                    String content3 = EntityUtils.toString(response.getEntity(), "gbk");
-//                    System.out.println(content3);
+                    wanted = wanted.substring(0,wanted.length()-1);
+                    System.out.println("wanted: " + wanted);
+                    HttpPost httpPost3 = new HttpPost("http://115.com/lixian/?ct=lixian&ac=add_task_bt");
+                    httpPost3.setHeader("Cookie","115_lang=zh; payment=alipay; ssov_2955186=1_2955186_181c9134447ce8222432f8f4e9bc0352; UUID=11555B84B373A6D0; UUTK=fb8e44GeIl56c5%2Fnq5NNlwKGuxbbxom%2F2ZG9ZN%2FFivo126jfWZbtsmsMinnOa9vLKtjN2Vm%2FL8MR8%2FsQTZPnepSZVZ%2F2XMXfk7%2Fak; loginType=1; UID=2955186_A1_1438141248; CID=275d5e5c4d7672839faef61ff63db327; SEID=c6675c08aea0993469e65e7d7ee7c2d6f7cfd9609db2a18fa6aa9adb28e4c7bcaa361c5f7521b5946bce679071729770e13306e076857093a71770b2; OOFA=%2507%250ETSWZ%2507%250CC%2505%2540%250BX%2505LZW%2502%255CU%250D%2506%250BT%2506TPQ%255B%255B%2502%2502%250F%2507%2502U%2502%2504S%2507%2507%2502%255C%2500%2500V%2507Q%2506YP%2506Z%250C%2500U%2501%2507%2507%2507ZS%255EQ%250C; OOFL=2955186; __utmt=1; __utma=48116967.2024335568.1424070885.1438138556.1438141246.36; __utmb=48116967.1.10.1438141246; __utmc=48116967; __utmz=48116967.1424070885.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
+                    httpPost3.setHeader("Referer","http://115.com/?ac=offline_tpl&is_wl_tpl=1");
+                    httpPost3.setHeader("Host", "115.com");
+                    httpPost3.setHeader("Origin", "http://115.com");
+                    List<NameValuePair> list2 = new ArrayList<NameValuePair>();
+                    list2.add(new BasicNameValuePair("info_hash", infoHash));
+                    list2.add(new BasicNameValuePair("wanted", wanted));
+                    list2.add(new BasicNameValuePair("savepath", path));
+                    list2.add(new BasicNameValuePair("uid", "2955186"));
+                    list2.add(new BasicNameValuePair("sign", "2df57e7e111be9d368a2877272494b9d"));
+                    list2.add(new BasicNameValuePair("time", "1438141257"));
+                    UrlEncodedFormEntity entity2 = new UrlEncodedFormEntity(list2, Consts.UTF_8);
+                    httpPost3.setEntity(entity2);
+                    response = httpClient.execute(httpPost3);
+                    String content3 = EntityUtils.toString(response.getEntity(), "gbk");
+                    System.out.println(content3);
                 }
             }
         } finally {
