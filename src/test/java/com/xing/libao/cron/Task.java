@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,6 +45,14 @@ public class Task {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Test
+    public void text(){
+        String s = "招贤纳士啦！诚聘";
+        String tmp = s.replaceAll("诚聘|啦","");
+        System.out.println(s.length()!=tmp.length());
     }
 
     @Test

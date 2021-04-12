@@ -58,22 +58,29 @@ public class WeiBoCron {
                 long uid = user.getLong("id");
                 String userName = user.getString("name");
                 int verifiedType = user.getInt("verified_type");
-                if (!midSet.hasIn(mid)) {
+                if (!midSet.hasIn(uid)) {
                     WeiBo weiBo = new WeiBo(uid, mid, filterOffUtf8Mb4(text), userName, verifiedType);
 //                    System.out.println(weiBo);
-                    titleDao.saveWeiBo(weiBo);
-                    midSet.setSet(mid);
+                    if(canSave(filterOffUtf8Mb4(text))) {
+                        titleDao.saveWeiBo(weiBo);
+                        midSet.setSet(uid);
+                    }
                 }
             }
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         }
+    }
+
+    private static boolean canSave(String text) {
+        String tmp = text.replaceAll("招聘|急聘|招贤纳士|面议|诚聘|公开招聘|招聘信息|高薪招聘|职位描述|职位详情|待遇从优|待遇优厚|薪酬福利优厚|虚位以待|简历|虚席以待", "");
+        return text.length() != tmp.length();
     }
 
     private static String returnChinese(String s) {
         return s.replaceAll("[^\u4E00-\u9FA5]", "");
     }
 
-    private static String chinese(String str){
+    private static String chinese(String str) {
         try {
             System.out.println(filterOffUtf8Mb4(str));
         } catch (UnsupportedEncodingException e) {
@@ -92,11 +99,7 @@ public class WeiBoCron {
                 buffer.put(bytes[i++]);
                 continue;
             }
-
-
             b += 256; // 去掉符号位
-
-
             if (((b >> 5) ^ 0x6) == 0) {
                 buffer.put(bytes, i, 2);
                 i += 2;
