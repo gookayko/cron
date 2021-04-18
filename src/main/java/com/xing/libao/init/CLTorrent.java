@@ -1,5 +1,7 @@
 package com.xing.libao.init;
 
+import com.xing.libao.util.RequestUtil;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -7,6 +9,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,7 +22,7 @@ import org.jsoup.select.Elements;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,68 +36,91 @@ import java.util.regex.Pattern;
  */
 public class CLTorrent {
     public static void main(String[] args) throws Exception {
-        String url = "http://dz.cldz.biz/htm_data/15/1508/1582524.html";
-        HttpGet get = new HttpGet(url);
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        CloseableHttpResponse response = httpClient.execute(get);
-        if (response.getStatusLine().getStatusCode() != 200) {
-            System.out.println("访问网站出错！ code: " + response.getStatusLine().getStatusCode() + " url: " + url);
+        RequestUtil requestUtil = RequestUtil.getInstance();
+        for (int i = 10; i < 40; i++) {
+            String url = "http://dz.cldz.biz/thread0806.php?fid=15&page=" + i;
+            System.out.println("url: " + url);
+            String content = requestUtil.getHtml(url);
+            if (StringUtils.isEmpty(content))
+                continue;
+            Document document = Jsoup.parse(content);
+            Elements elements = document.select("h3>a");
+            for (Element element : elements) {
+                String href = element.attr("href");
+                if (href.contains("htm_data")) {
+                    content = requestUtil.getHtml("http://dz.cldz.biz/" + href);
+                    if (StringUtils.isEmpty(content))
+                        continue;
+                    System.out.println("detail: " + "http://dz.cldz.biz/" + href);
+                    String title = getPattern("<b>本頁主題:</b> (.*?)</td>", content);
+                    String hash = getPattern("http://www\\.rmdown\\.com/link\\.php\\?hash=(.*?)</a>", content);
+                    if (hash != null && title != null) {
+                        content = requestUtil.getHtml("http://www.rmdown.com/link.php?hash=" + hash);
+                        if (StringUtils.isEmpty(content))
+                            continue;
+                        String ref = getPattern("name=\"reff\" value=\"(.*?)\">", content);
+                        if (ref != null) {
+                            HttpPost post = new HttpPost("http://www.rmdown.com/download.php");
+                            List<NameValuePair> list = new ArrayList<NameValuePair>();
+                            list.add(new BasicNameValuePair("ref", hash));
+                            list.add(new BasicNameValuePair("submit", "download"));
+                            list.add(new BasicNameValuePair("reff", ref));
+                            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, Consts.UTF_8);
+                            post.setEntity(entity);
+                            try {
+                                CloseableHttpResponse response = requestUtil.execute(post);
+                                title = title.replaceAll("\\\\|/|:|\\*|\\?|\"|<|>|\\|", "");
+                                File file = new File("D:\\" + title + ".torrent");
+                                if (!file.exists() && response != null) {
+                                    if (file.createNewFile()) {
+                                        BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(file));
+                                        byte[] result = EntityUtils.toByteArray(response.getEntity());
+                                        bw.write(result);
+                                        bw.close();
+                                    } else {
+                                        System.out.println("file create fail!" + file.getName());
+                                    }
+                                } else {
+                                    System.out.println("file already exist!" + file.getName());
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        } else {
+                            System.out.println("ref is null! " + title);
+                        }
+                    } else {
+                        System.out.println("hash = null || title == null: " + content);
+                    }
+                } else {
+                    System.out.println("content doesn't have href! " + href);
+                }
+                Thread.sleep(500);
+            }
         }
-        HttpEntity re = response.getEntity();
-        String content = EntityUtils.toString(re, "gbk");
-        System.out.println(content);
-        Pattern pattern = Pattern.compile("<b>本頁主題:</b> (.*?)</td>");
+
+    }
+
+    private static String getPattern(String regex, String content) {
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(content);
         String title = null;
         if (matcher.find()) {
             title = matcher.group(1);
-            System.out.println(title);
+        } else {
+            System.out.println("pattern can't find!" + regex);
         }
-        Pattern pattern1 = Pattern.compile("http://www\\.rmdown\\.com/link\\.php\\?hash=(.*?)</a>");
-        Matcher matcher1 = pattern1.matcher(content);
-        String hash = null;
-        if (matcher1.find()) {
-            hash = matcher1.group(1);
-            System.out.println(hash);
-        }
-        if (hash != null && title!=null) {
-            HttpGet get1 = new HttpGet("http://www.rmdown.com/link.php?hash=" + hash);
-            CloseableHttpClient httpClient1 = HttpClientBuilder.create().build();
-            CloseableHttpResponse response1 = httpClient1.execute(get1);
-            if (response1.getStatusLine().getStatusCode() != 200) {
-                System.out.println("访问网站出错！ code: " + response1.getStatusLine().getStatusCode() + " url: " + url);
-            }
-            HttpEntity re1 = response1.getEntity();
-            String content1 = EntityUtils.toString(re1, "gbk");
-            System.out.println(content1);
-            Pattern pattern2 = Pattern.compile("name=\"reff\" value=\"(.*?)\">",Pattern.CASE_INSENSITIVE);
-            Matcher matcher2 = pattern2.matcher(content1);
-            String reff = null;
-            if(matcher2.find()){
-                reff = matcher2.group(1);
-                System.out.println(reff);
-            }
-            if(reff!=null) {
-                HttpPost post = new HttpPost("http://www.rmdown.com/download.php");
-                List<NameValuePair> list = new ArrayList<NameValuePair>();
-                list.add(new BasicNameValuePair("ref", hash));
-                list.add(new BasicNameValuePair("submit", "download"));
-                list.add(new BasicNameValuePair("reff", reff));
-                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, Consts.UTF_8);
-                post.setEntity(entity);
-                response = httpClient.execute(post);
-                title = title.replaceAll("\\\\|/|:|\\*|\\?|\"|<|>|\\|", "");
-                File file = new File("D:\\" + title + ".torrent");
-                file.createNewFile();
-                BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(file));
-                byte[] result = EntityUtils.toByteArray(response.getEntity());
-                bw.write(result);
-                bw.close();
-            }
-        }
+        return title;
     }
 
     private static void tes() throws Exception {
+        URIBuilder uriBuilder = new URIBuilder();
+        uriBuilder.setHost("dz.cldz.biz");
+        uriBuilder.setPath("thread0806.php");
+        uriBuilder.setParameter("fid", "15");
+        uriBuilder.setParameter("page", "2");
+        uriBuilder.setScheme("http");
         String uri = "http://dz.cldz.biz/thread0806.php?fid=15&page=2";
         HttpGet get = new HttpGet(uri);
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
