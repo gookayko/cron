@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -37,7 +38,7 @@ import java.util.regex.Pattern;
 public class CLTorrent {
     public static void main(String[] args) throws Exception {
         RequestUtil requestUtil = RequestUtil.getInstance();
-        for (int i = 10; i < 40; i++) {
+        for (int i = 25; i < 40; i++) {
             String url = "http://dz.cldz.biz/thread0806.php?fid=15&page=" + i;
             System.out.println("url: " + url);
             String content = requestUtil.getHtml(url);
@@ -53,8 +54,9 @@ public class CLTorrent {
                         continue;
                     System.out.println("detail: " + "http://dz.cldz.biz/" + href);
                     String title = getPattern("<b>本頁主題:</b> (.*?)</td>", content);
-                    String hash = getPattern("http://www\\.rmdown\\.com/link\\.php\\?hash=(.*?)</a>", content);
+                    String hash = getPattern("http://www\\.rmdown\\.com/link\\.php\\?hash=(.*?)[<br>][</a>]", content);
                     if (hash != null && title != null) {
+                        System.out.println("http://www.rmdown.com/link.php?hash=" + hash);
                         content = requestUtil.getHtml("http://www.rmdown.com/link.php?hash=" + hash);
                         if (StringUtils.isEmpty(content))
                             continue;
@@ -68,15 +70,18 @@ public class CLTorrent {
                             UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, Consts.UTF_8);
                             post.setEntity(entity);
                             try {
-                                CloseableHttpResponse response = requestUtil.execute(post);
                                 title = title.replaceAll("\\\\|/|:|\\*|\\?|\"|<|>|\\|", "");
                                 File file = new File("D:\\" + title + ".torrent");
-                                if (!file.exists() && response != null) {
+                                if (!file.exists()) {
                                     if (file.createNewFile()) {
-                                        BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(file));
-                                        byte[] result = EntityUtils.toByteArray(response.getEntity());
-                                        bw.write(result);
-                                        bw.close();
+                                        CloseableHttpResponse response = requestUtil.execute(post);
+                                        if (response != null) {
+                                            BufferedOutputStream bw = new BufferedOutputStream(new FileOutputStream(file));
+                                            byte[] result = EntityUtils.toByteArray(response.getEntity());
+                                            bw.write(result);
+                                            bw.close();
+                                            response.close();
+                                        }
                                     } else {
                                         System.out.println("file create fail!" + file.getName());
                                     }

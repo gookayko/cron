@@ -11,6 +11,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -42,6 +44,14 @@ public class BtDig {
     private static String key = "avop";
 
     public static void main(String[] args) throws Exception {
+        String s = "http://www.rmdown.com/link.php?hash=152d2faadb4b9a451d06e7d1569fa3f0d1631a79d07</a><br><br><font size=\"4\">";
+        Pattern pattern = Pattern.compile("http://www\\.rmdown\\.com/link\\.php\\?hash=(.*?)[<br>][</a>]");
+        Matcher matcher = pattern.matcher(s);
+        String title = null;
+        if (matcher.find()) {
+            title = matcher.group(1);
+            System.out.println(title);
+        }
 //        String sKey = URLEncoder.encode(key, "utf-8");
 //        HttpGet get = new HttpGet(base + sKey);
 //        get.setHeader("cookie", "__cfduid=d3945b4e907d68662d823a6251a6e43c31427970290; lang=cn; flush_ts=1437035975.68; __utmt=1; __utma=200931581.1852259498.1427970290.1437035975.1437386072.14; __utmb=200931581.2.10.1437386072; __utmc=200931581; __utmz=200931581.1427970290.1.1.utmcsr=yuese.info|utmccn=(referral)|utmcmd=referral|utmcct=/");
@@ -86,7 +96,7 @@ public class BtDig {
 //        for (Element element : elements) {
 //            System.out.println(element.text());
 //        }
-        testSSL2();
+//        testSSL2();
     }
 
     private static void testSSL2() throws Exception{

@@ -9,6 +9,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -29,7 +33,15 @@ public class RequestUtil {
     }
 
     private RequestUtil() {
-        httpClient = HttpClientBuilder.create().build();
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(2000)
+                .setConnectTimeout(2000)
+                .setConnectionRequestTimeout(2000)
+                .build();
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        cm.setMaxTotal(50);
+        cm.setDefaultMaxPerRoute(40);
+        httpClient = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(requestConfig).build();
     }
 
     public static RequestUtil getInstance() {
@@ -46,11 +58,6 @@ public class RequestUtil {
 
     public String getHtml(String url, String charset) {
         HttpGet get = new HttpGet(url);
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setSocketTimeout(1000)
-                .setConnectTimeout(1000)
-                .build();
-        get.setConfig(requestConfig);
         return html(get, charset);
     }
 
@@ -75,6 +82,10 @@ public class RequestUtil {
             }
             HttpEntity re = response.getEntity();
             content = EntityUtils.toString(re, charset);
+            if(!request.isAborted()){
+                request.abort();
+            }
+            response.close();
         } catch (SocketTimeoutException e) {
             System.out.println("Read timed out!" + request.getURI().toString());
         } catch (IOException e) {
